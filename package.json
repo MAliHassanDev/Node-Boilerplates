@@ -20,8 +20,9 @@
   "lint-staged": {
     "*.{ts,tsx}": [
       "prettier --write",
-      "eslint"
-    ]
+      "eslint --max-warnings 0 ."
+    ],
+    "*.md": ["prettier --write"]
   },
   "keywords": [],
   "author": "",
