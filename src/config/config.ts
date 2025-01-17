@@ -92,7 +92,7 @@ class Config {
   private getEnv<T extends Env>(
     name: string,
     defaultValue: T,
-    expectedValues?: Array<Env>,
+    expectedValues?: Env[],
   ): T {
     const value =
       process.env[`${name}_${(this.env ?? "development").toUpperCase()}`] ??

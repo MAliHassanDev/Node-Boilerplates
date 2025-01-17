@@ -13,16 +13,11 @@ type ResponseStatus = "success" | "fail" | "error";
 
 type ResponseData = Record<string, unknown> | null;
 
-interface ResponseError {
-  field: string;
-  message: string;
-}
-
 interface ResponseBody {
   status: ResponseStatus;
   message: string;
   data: ResponseData | null;
-  errors?: Array<ResponseError>;
+  errors?: ApiResponse[];
 }
 
 export interface ApiResponse {
@@ -34,7 +29,7 @@ export interface ApiResponse {
     message?: string,
   ) => void;
   badRequest: (
-    errors?: Array<ResponseError>,
+    errors?: ApiResponse[],
     code?: BadRequestErrorCode,
     message?: string,
   ) => void;
@@ -72,7 +67,7 @@ const apiResponse = (_: Request, res: Response, next: NextFunction) => {
   };
 
   res.badRequest = function (
-    errors: Array<ResponseError> = [],
+    errors: ApiResponse[] = [],
     code: BadRequestErrorCode = "badRequest",
     message = API_RESPONSE_MESSAGES.badRequest[code],
   ) {
@@ -100,7 +95,7 @@ function createResponseBody(
   status: ResponseStatus,
   message: string,
   data: ResponseData = null,
-  errors?: Array<ResponseError>,
+  errors?: ApiResponse[],
 ) {
   const body: ResponseBody = {
     status,
