@@ -21,7 +21,7 @@ export default tseslint.config(
         "error",
         { allowNumber: true },
       ],
-      "@typescript-eslint/array-type": ["error", { default: "generic" }],
+      "@typescript-eslint/array-type": ["error", { default: "array" }],
       "@typescript-eslint/no-unused-vars": "warn",
     },
   },
