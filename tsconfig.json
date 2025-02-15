@@ -8,7 +8,6 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowJs": true,
-    "verbatimModuleSyntax": true,
     "isolatedModules": true,
     "moduleDetection": "force",
     "esModuleInterop": true,
@@ -21,8 +20,9 @@
 
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "strictPropertyInitialization": false,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
     "noUncheckedIndexedAccess": true,
