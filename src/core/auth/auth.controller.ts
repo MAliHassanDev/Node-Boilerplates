@@ -9,7 +9,6 @@ import {
   UsePipes,
   ValidationPipe,
 } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
 import { ApiResponse, ApiTags } from "@nestjs/swagger";
 import { LocalAuthGuard } from "./guards/local-auth.guard.js";
 import { LoginInDto } from "./dto/login-user.dto.js";

@@ -25,7 +25,8 @@ export class UsersService {
   ];
 
   async findOne(email: string): Promise<User | undefined> {
-    return new Promise((res, rej) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    return new Promise((res, _) => {
       setTimeout(() => {
         res(this.users.find(user => user.email === email));
       }, 1000);

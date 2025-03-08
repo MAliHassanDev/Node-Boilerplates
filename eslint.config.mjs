@@ -43,5 +43,3 @@ export default tseslint.config(
   },
   eslintNestJs.configs.flatRecommended,
 );
-
-console.log(eslintNestJs.configs.flatRecommended);
