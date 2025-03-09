@@ -41,6 +41,9 @@
     "@nestjs/swagger": "^11.0.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "kysely": "^0.27.5",
+    "mysql2": "^3.12.0",
+    "nestjs-kysely": "^1.1.0",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "reflect-metadata": "^0.2.2",
@@ -65,6 +68,7 @@
     "eslint-plugin-prettier": "^5.2.2",
     "globals": "^15.14.0",
     "husky": "^9.1.7",
+    "kysely-ctl": "^0.12.1",
     "lint-staged": "^15.4.3",
     "prettier": "^3.4.2",
     "source-map-support": "^0.5.21",
@@ -76,5 +80,13 @@
     "typescript-eslint": "^8.20.0",
     "unplugin-swc": "^1.5.1",
     "vitest": "^3.0.5"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@nestjs/core",
+      "@scarf/scarf",
+      "@swc/core",
+      "esbuild"
+    ]
   }
 }

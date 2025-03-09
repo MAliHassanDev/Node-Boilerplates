@@ -1,4 +1,7 @@
 import { Injectable } from "@nestjs/common";
+import { Kysely } from "kysely";
+import { Database } from "../../database/types.js";
+import { InjectKysely } from "../../kysely/decorators/kysely.decorators.js";
 
 export type User = {
   id: number;
@@ -23,6 +26,8 @@ export class UsersService {
       password: "guess",
     },
   ];
+
+  public constructor(@InjectKysely() private readonly db: Kysely<Database>) {}
 
   async findOne(email: string): Promise<User | undefined> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
