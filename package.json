@@ -43,7 +43,6 @@
     "class-validator": "^0.14.1",
     "kysely": "^0.27.5",
     "mysql2": "^3.12.0",
-    "nestjs-kysely": "^1.1.0",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "reflect-metadata": "^0.2.2",
