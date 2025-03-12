@@ -1,6 +1,12 @@
 ARG NODE_VERSION=22.14.0
 
-FROM node:${NODE_VERSION}-alpine
+FROM node:${NODE_VERSION}-slim
+
+ENV PNPM_HOME="/pnpm"
+
+ENV PATH="$PNPM_HOME:$PATH"
+
+RUN corepack enable
 
 WORKDIR /usr/app
 
