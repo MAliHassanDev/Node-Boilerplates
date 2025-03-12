@@ -17,6 +17,7 @@
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "outDir": "dist",
+    
 
     /* Linting */
     "strict": true,
