@@ -23,4 +23,5 @@ async function bootstrap() {
 
   Logger.log(`Server listening at ${await app.getUrl()}`, "Main");
 }
+
 void bootstrap();
