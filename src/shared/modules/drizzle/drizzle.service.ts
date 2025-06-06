@@ -32,6 +32,8 @@ export class DrizzleService implements OnModuleInit, OnModuleDestroy {
       return;
     } catch (error: unknown) {
       this.logger.error("Failed to connect to database", error);
+      await client?.$client.end();
+      throw error;
     }
   }
 

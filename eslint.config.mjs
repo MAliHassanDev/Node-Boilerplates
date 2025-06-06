@@ -14,6 +14,7 @@ export default tseslint.config(
   ...tseslint.configs.strictTypeChecked,
   ...tseslint.configs.stylisticTypeChecked,
   // eslintPluginPrettierRecommended,
+   eslintNestJs.configs.flatRecommended,
   {
     languageOptions: {
       globals: {
@@ -39,7 +40,9 @@ export default tseslint.config(
       "@typescript-eslint/no-extraneous-class": "off",
       "@typescript-eslint/no-unused-vars": "warn",
       "@typescript-eslint/consistent-type-definitions": "off",
+      "@typescript-eslint/array-type": "off",
+      "@darraghor/nestjs-typed/api-method-should-specify-api-response": "off",
     },
   },
-  eslintNestJs.configs.flatRecommended,
+ 
 );

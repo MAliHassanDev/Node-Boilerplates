@@ -1,4 +1,4 @@
-import { DynamicModule, Module, Provider } from "@nestjs/common";
+import { DynamicModule, Provider } from "@nestjs/common";
 import {
   DrizzleModuleAsyncOptions,
   DrizzlePostgresConfig,

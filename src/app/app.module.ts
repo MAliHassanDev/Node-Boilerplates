@@ -2,18 +2,19 @@ import { Module } from "@nestjs/common";
 import { AppController } from "./app.controller.js";
 import { AppService } from "./app.service.js";
 import { ConfigModule } from "@nestjs/config";
-import configurations from "../config/configurations.js";
 import { AuthModule } from "../core/auth/auth.module.js";
 import { SharedModule } from "../shared/shared.module.js";
-import { DrizzleModule } from "../shared/drizzle/drizzle.module.js";
+import { DrizzleModule } from "../shared/modules/drizzle/drizzle.module.js";
 import { EnvService } from "../shared/services/env/env.service.js";
 import * as schema from "../db/schema/index.js";
+import { envSchema } from "../shared/services/env/env.schema.js";
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [configurations],
+      envFilePath: ".env",
+      validate: env => envSchema.parse(env),
     }),
     DrizzleModule.forRootAsync({
       inject: [EnvService],

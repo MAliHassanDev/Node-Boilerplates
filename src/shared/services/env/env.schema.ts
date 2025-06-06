@@ -14,15 +14,10 @@ export const envSchema = z.object({
   DATABASE_NAME: z.string().default("myDb"),
   DATABASE_HOST: z.string().default("localhost"),
   DATABASE_PORT: z.coerce.number().default(5432),
-  DATABASE_USER: z.string(),
+  DATABASE_USER: z.string().default("postgres"),
   DATABASE_PASSWORD: z.string().optional(),
   DATABASE_PASSWORD_FILE: z.string().default("/run/secrets/db-password"),
   DATABASE_URL: z.string(),
-  LOGIN_URL: z.string().default("http://192.168.100.73:3000/login"),
-  EMAIL_HOST: z.string(),
-  EMAIL_PORT: z.string(),
-  EMAIL_USERNAME: z.string(),
-  EMAIL_PASSWORD: z.string(),
 });
 
 export type Env = z.infer<typeof envSchema>;
