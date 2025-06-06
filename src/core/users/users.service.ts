@@ -1,40 +1,33 @@
 import { Injectable } from "@nestjs/common";
-import { Kysely } from "kysely";
-import { Database } from "../../database/types.js";
-import { InjectKysely } from "../../kysely/decorators/kysely.decorators.js";
-
-export type User = {
-  id: number;
-  username: string;
-  email: string;
-  password: string;
-};
+import { InjectDrizzle } from "../../shared/drizzle/drizzle.decorators.js";
+import type { Database } from "../../db/type.js";
+import { User } from "./types/user.type.js";
+import { eq, SQL } from "drizzle-orm";
+import { userTable } from "../../db/schema/index.js";
 
 @Injectable()
 export class UsersService {
-  private readonly users: User[] = [
-    {
-      id: 1,
-      username: "john",
-      email: "john",
-      password: "changeme",
-    },
-    {
-      id: 2,
-      username: "maria",
-      email: "maria@gmail.com",
-      password: "guess",
-    },
-  ];
-
-  public constructor(@InjectKysely() private readonly db: Kysely<Database>) {}
+  public constructor(@InjectDrizzle() private readonly db: Database) {}
 
   async findOne(email: string): Promise<User | undefined> {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    return new Promise((res, _) => {
-      setTimeout(() => {
-        res(this.users.find(user => user.email === email));
-      }, 1000);
+    return this.db.query.userTable.findFirst({
+      where: (fields, operator) => operator.eq(fields.email, email),
     });
+  }
+
+  public find(criteria: Partial<User>) {
+    const filters: SQL[] = [];
+
+    if (criteria.firstName) {
+      filters.push(eq(userTable.firstName, criteria.firstName));
+    }
+
+    if (criteria.email) {
+      filters.push(eq(userTable.email, criteria.email));
+    }
+
+    if (criteria.lastName) {
+      filters.push(eq(userTable.lastName, criteria.lastName));
+    }
   }
 }

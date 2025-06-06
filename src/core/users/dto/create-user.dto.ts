@@ -14,12 +14,8 @@ export class RegisterUserDto {
   @IsString()
   public readonly password: string;
 
-  @IsEnum(["male", "female", "other"], {
+  @IsEnum(["MALE", "FEMALE", "OTHER"], {
     message: "Gender must male, female or other",
   })
   public readonly gender: "male" | "female" | "other";
-
-  @IsEnum(["admin", "influencer", "user"])
-  @IsOptional()
-  public readonly role: "admin" | "influencer" | "user";
 }
