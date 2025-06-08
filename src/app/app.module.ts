@@ -9,7 +9,8 @@ import { EnvService } from "../shared/services/env/env.service.js";
 import * as schema from "../db/schema/index.js";
 import { envSchema } from "../shared/services/env/env.schema.js";
 import { UsersModule } from "../core/users/users.module.js";
-import { APP_INTERCEPTOR } from "@nestjs/core";
+import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
+import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 
 @Module({
   imports: [
@@ -33,6 +34,14 @@ import { APP_INTERCEPTOR } from "@nestjs/core";
         };
       },
     }),
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 60000,
+          limit: 10,
+        },
+      ],
+    }),
     SharedModule,
     AuthModule,
     UsersModule,
@@ -43,6 +52,10 @@ import { APP_INTERCEPTOR } from "@nestjs/core";
     {
       provide: APP_INTERCEPTOR,
       useClass: ClassSerializerInterceptor,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
     },
   ],
 })
