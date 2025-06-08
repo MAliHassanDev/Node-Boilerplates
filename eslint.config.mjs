@@ -40,6 +40,7 @@ export default tseslint.config(
       "@typescript-eslint/no-extraneous-class": "off",
       "@typescript-eslint/no-unused-vars": "warn",
       "@typescript-eslint/consistent-type-definitions": "off",
+      "@typescript-eslint/no-misused-spread": "off",
       "@typescript-eslint/array-type": "off",
       "@darraghor/nestjs-typed/api-method-should-specify-api-response": "off",
     },

@@ -1,10 +1,16 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectDrizzle } from "../../shared/modules/drizzle/drizzle.decorators.js";
 import type { Database } from "../../db/type.js";
-import { NewUser, User, UserUpdate } from "./types/user.type.js";
+import { User, UserUpdate } from "./types/user.type.js";
 import { and, eq, SQL } from "drizzle-orm";
-import { userTable } from "../../db/schema/index.js";
-import { executeInsertTakeFirstOrThrow } from "../../utils/db.utils.js";
+import { roleTable, userTable } from "../../db/schema/index.js";
+import {
+  executeInsertTakeFirstOrThrow,
+  handleDatabaseInsertException,
+} from "../../utils/db.utils.js";
+import { CreateUserDto } from "./dto/create-user.dto.js";
+import { ROLE } from "../roles/roles.constants.js";
+import { UserEntity } from "./entities/user.entity.js";
 
 @Injectable()
 export class UsersService {
@@ -12,7 +18,7 @@ export class UsersService {
 
   public constructor(@InjectDrizzle() private readonly db: Database) {}
 
-  async findOne(email: string): Promise<User | undefined> {
+  async findOne(email: string): Promise<UserEntity | undefined> {
     return await this.findFirst({ email });
   }
 
@@ -30,7 +36,6 @@ export class UsersService {
         .update(userTable)
         .set(user)
         .where(eq(userTable.id, userId))
-        .returning()
         .execute();
     } catch (error: unknown) {
       this.logger.error("Failed to update user", error);
@@ -38,18 +43,44 @@ export class UsersService {
     }
   }
 
-  public async create(user: NewUser): Promise<User> {
+  public async create(createUserDto: CreateUserDto): Promise<UserEntity> {
     try {
-      return await executeInsertTakeFirstOrThrow(
-        this.db.insert(userTable).values(user).returning(),
+      let userRole = await this.db.query.roleTable.findFirst({
+        where: eq(roleTable.name, "USER"),
+      });
+
+      userRole ??= await executeInsertTakeFirstOrThrow(
+        this.db
+          .insert(roleTable)
+          .values(Object.values(ROLE))
+          .returning()
+          .execute(),
       );
+
+      const { id } = await executeInsertTakeFirstOrThrow(
+        this.db
+          .insert(userTable)
+          .values({ ...createUserDto, roleId: userRole.id })
+          .returning(),
+      );
+      return await this.findFirstOrThrow({ id });
     } catch (error: unknown) {
       this.logger.error("Failed to create user", error);
-      throw error;
+      handleDatabaseInsertException(error, {
+        resource: "User",
+      });
     }
   }
 
-  public findMany(criteria: Partial<User>) {
+  public async findFirstOrThrow(criteria: Partial<User>): Promise<UserEntity> {
+    const user = await this.findFirst(criteria);
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+    return user;
+  }
+
+  public findMany(criteria: Partial<User>): Promise<UserEntity[]> {
     const filters: SQL[] = [];
 
     if (criteria.firstName) {
@@ -79,6 +110,9 @@ export class UsersService {
     return this.db.query.userTable
       .findMany({
         where: and(...filters),
+        with: {
+          role: true,
+        },
       })
       .execute();
   }

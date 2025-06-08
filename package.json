@@ -13,8 +13,9 @@
     "db:generate": "NODE_OPTIONS='--import tsx' drizzle-kit generate",
     "migrate:down": "drizzle-kit drop",
     "migrate:up": "drizzle-kit migrate",
+    "migrate:push": "NODE_OPTIONS='--import tsx' drizzle-kit push --force",
     "start": "nest start",
-    "start:dev": "nest start --tsc --watch",
+    "start:dev": "npm run migrate:push && nest start --tsc --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -54,7 +55,7 @@
     "postgres": "^3.4.7",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
-    "zod": "^3.25.45"
+    "zod": "^3.25.55"
   },
   "devDependencies": {
     "@darraghor/eslint-plugin-nestjs-typed": "^6.2.4",

@@ -14,6 +14,7 @@ export class AllExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(AllExceptionFilter.name);
 
   catch(exception: unknown, host: ArgumentsHost) {
+    console.log("Exception caught in AllExceptionFilter");
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
 

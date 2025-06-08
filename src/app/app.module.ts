@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { ClassSerializerInterceptor, Module } from "@nestjs/common";
 import { AppController } from "./app.controller.js";
 import { AppService } from "./app.service.js";
 import { ConfigModule } from "@nestjs/config";
@@ -8,6 +8,8 @@ import { DrizzleModule } from "../shared/modules/drizzle/drizzle.module.js";
 import { EnvService } from "../shared/services/env/env.service.js";
 import * as schema from "../db/schema/index.js";
 import { envSchema } from "../shared/services/env/env.schema.js";
+import { UsersModule } from "../core/users/users.module.js";
+import { APP_INTERCEPTOR } from "@nestjs/core";
 
 @Module({
   imports: [
@@ -33,8 +35,15 @@ import { envSchema } from "../shared/services/env/env.schema.js";
     }),
     SharedModule,
     AuthModule,
+    UsersModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ClassSerializerInterceptor,
+    },
+  ],
 })
 export class AppModule {}

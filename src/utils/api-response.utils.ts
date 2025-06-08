@@ -1,6 +1,7 @@
 import { HttpStatus, Logger } from "@nestjs/common";
 import { ApiResponse } from "../shared/types/api-response.type.js";
 import { PostgresException } from "./exception.utils.js";
+import { extractViolatedColumnFromUniqueConstraint } from "./db.utils.js";
 
 export function createApiResponseBody<T>(
   statusCode: number = HttpStatus.OK,
@@ -8,8 +9,8 @@ export function createApiResponseBody<T>(
   data: T | null = null,
 ) {
   return {
-    message,
     statusCode,
+    message,
     data,
   } satisfies ApiResponse<T | null>;
 }
@@ -19,12 +20,12 @@ export function createApiResponseBodyFromPostgresException(
 ): ApiResponse<null> {
   switch (exception.cause.code) {
     // Unique violation - trying to insert duplicate key
-    case "23505":
-      return createApiResponseBody(
-        HttpStatus.CONFLICT,
-        "A resource with the same unique identifier already exists.",
-      );
-
+    case "23505": {
+      const constraintName =
+        extractViolatedColumnFromUniqueConstraint(exception);
+      const message = `A record with same ${constraintName ?? "details"} already exists`;
+      return createApiResponseBody(HttpStatus.CONFLICT, message);
+    }
     // Foreign key violation - invalid relation
     case "23503":
       return createApiResponseBody(
