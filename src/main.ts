@@ -7,22 +7,22 @@ import { TransformSuccessResponseInterceptor } from "./shared/interceptors/trans
 import { useRequestLogging } from "./shared/middlewares/request-logger.middleware.js";
 import { useValidationPipe } from "./shared/pipes/use-validation-pipe.js";
 import { AllExceptionFilter } from "./shared/filters/all-exception.filter.js";
+import helmet from "helmet";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    cors: {
-      origin: "*",
-      methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-      preflightContinue: false,
-      optionsSuccessStatus: 204,
-    },
-  });
+  const app = await NestFactory.create(AppModule);
+
+  // enable cors
+  app.enableCors();
 
   // set global prefix for all routes
   app.setGlobalPrefix("/v1");
 
   // set express cookie parser
   app.use(cookieParser());
+
+  // use helmet for security
+  app.use(helmet());
 
   // set up global middlewares
   setupSwaggerDocumentation(app);
