@@ -5,6 +5,7 @@ export class UserEntity {
   id: string;
   firstName: string;
   lastName: string | null;
+  email: string;
 
   @Transform(
     ({ value }: { value?: RoleEntity }) => {

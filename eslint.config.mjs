@@ -14,7 +14,7 @@ export default tseslint.config(
   ...tseslint.configs.strictTypeChecked,
   ...tseslint.configs.stylisticTypeChecked,
   // eslintPluginPrettierRecommended,
-   eslintNestJs.configs.flatRecommended,
+  eslintNestJs.configs.flatRecommended,
   {
     languageOptions: {
       globals: {
@@ -38,12 +38,18 @@ export default tseslint.config(
       "@typescript-eslint/no-floating-promises": "warn",
       "@typescript-eslint/no-unsafe-argument": "warn",
       "@typescript-eslint/no-extraneous-class": "off",
-      "@typescript-eslint/no-unused-vars": "warn",
       "@typescript-eslint/consistent-type-definitions": "off",
       "@typescript-eslint/no-misused-spread": "off",
       "@typescript-eslint/array-type": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
       "@darraghor/nestjs-typed/api-method-should-specify-api-response": "off",
     },
   },
- 
 );

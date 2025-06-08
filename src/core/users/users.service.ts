@@ -11,15 +11,31 @@ import {
 import { CreateUserDto } from "./dto/create-user.dto.js";
 import { ROLE } from "../roles/roles.constants.js";
 import { UserEntity } from "./entities/user.entity.js";
+import { PasswordService } from "../../shared/services/password.service.js";
 
 @Injectable()
 export class UsersService {
   private readonly logger = new Logger(UsersService.name);
 
-  public constructor(@InjectDrizzle() private readonly db: Database) {}
+  public constructor(
+    @InjectDrizzle() private readonly db: Database,
+    private readonly passwordService: PasswordService,
+  ) {}
 
-  async findOne(email: string): Promise<UserEntity | undefined> {
-    return await this.findFirst({ email });
+  async findFirstIncludePassword(
+    email: string,
+  ): Promise<UserEntity | undefined> {
+    try {
+      return await this.db.query.userTable.findFirst({
+        where: eq(userTable.email, email),
+        with: {
+          role: true,
+        },
+      });
+    } catch (error: unknown) {
+      this.logger.error("Failed to find user", error);
+      throw error;
+    }
   }
 
   public async findFirst(criteria: Partial<User>) {
@@ -57,10 +73,18 @@ export class UsersService {
           .execute(),
       );
 
+      const hashedPassword = await this.passwordService.hash(
+        createUserDto.password,
+      );
+
       const { id } = await executeInsertTakeFirstOrThrow(
         this.db
           .insert(userTable)
-          .values({ ...createUserDto, roleId: userRole.id })
+          .values({
+            ...createUserDto,
+            password: hashedPassword,
+            roleId: userRole.id,
+          })
           .returning(),
       );
       return await this.findFirstOrThrow({ id });

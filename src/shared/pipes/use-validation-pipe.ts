@@ -1,9 +1,5 @@
-import {
-  BadRequestException,
-  INestApplication,
-  ValidationPipe,
-} from "@nestjs/common";
-import { ApiResponse } from "../types/api-response.type.js";
+import { INestApplication, ValidationPipe } from "@nestjs/common";
+import { ApiResponseException } from "../../utils/exception.utils.js";
 
 export function useValidationPipe(app: INestApplication) {
   app.useGlobalPipes(
@@ -25,11 +21,11 @@ export function useValidationPipe(app: INestApplication) {
           },
           {},
         );
-        return new BadRequestException({
+        return new ApiResponseException({
           statusCode: 400,
           message: "Validation failed",
           data: transformedErrorObject,
-        } satisfies ApiResponse<Record<string, string>>);
+        });
       },
     }),
   );

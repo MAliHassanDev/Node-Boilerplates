@@ -11,6 +11,7 @@ import { envSchema } from "../shared/services/env/env.schema.js";
 import { UsersModule } from "../core/users/users.module.js";
 import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
+import { JwtAuthGuard } from "../core/auth/guards/jwt-auth.guard.js";
 
 @Module({
   imports: [
@@ -63,6 +64,10 @@ import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
     {
       provide: APP_INTERCEPTOR,
       useClass: ClassSerializerInterceptor,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
     },
     {
       provide: APP_GUARD,

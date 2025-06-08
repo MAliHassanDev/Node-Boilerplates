@@ -1,3 +1,6 @@
+import { HttpException } from "@nestjs/common";
+import { ApiResponse } from "../shared/types/api-response.type.js";
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export interface PostgresException extends Error {
   readonly cause: {
@@ -8,8 +11,20 @@ export interface PostgresException extends Error {
   };
 }
 
+export class ApiResponseException<T> extends HttpException {
+  private readonly data: T;
+
+  public constructor(options: ApiResponse<T>) {
+    super(options.message, options.statusCode);
+    this.data = options.data;
+  }
+
+  public getData() {
+    return this.data;
+  }
+}
+
 export function isPostgresException(error: any): error is PostgresException {
-  console.log(error);
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
   return error.cause?.code && error.cause?.severity === "ERROR";
 }
