@@ -1,6 +1,8 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { AuthService } from "../auth.service.js";
 import { UsersService } from "../../users/users.service.js";
+import { PasswordService } from "../../../shared/services/password.service.js";
+import { JwtService } from "@nestjs/jwt";
 
 describe("AuthService", () => {
   let service: AuthService;
@@ -9,6 +11,15 @@ describe("AuthService", () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
+        JwtService,
+        {
+          provide: PasswordService,
+          useValue: {
+            compare: vi.fn(),
+            hash: vi.fn(),
+            hashSync: vi.fn(),
+          },
+        },
         {
           provide: UsersService,
           useValue: {
