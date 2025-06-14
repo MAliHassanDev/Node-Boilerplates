@@ -13,6 +13,11 @@ export const envSchema = z.object({
   QUERY_LIMIT: z.coerce.number().default(50),
   DATABASE_NAME: z.string().default("myDb"),
   DATABASE_HOST: z.string().default("localhost"),
+  GOOGLE_CLIENT_ID: z.string(),
+  GOOGLE_CLIENT_SECRET: z.string(),
+  GOOGLE_CALLBACK_URL: z
+    .string()
+    .default("http://localhost:3000/v1/auth/google/callback"),
   DATABASE_PORT: z.coerce.number().default(5432),
   DATABASE_USER: z.string().default("postgres"),
   DATABASE_PASSWORD: z.string().optional(),

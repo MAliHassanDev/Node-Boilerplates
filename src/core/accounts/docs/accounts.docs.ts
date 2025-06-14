@@ -1,6 +1,6 @@
 import { ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { useCommonCreateResourceApiResponses } from "../../../shared/docs/common-api-response.docs.js";
-import { CreateUserDto } from "../dto/create-user.dto.js";
+import { CreateAccountDto } from "../dto/create-account.dto.js";
 
 export function ApiDocCreateUser() {
   return useCommonCreateResourceApiResponses(
@@ -12,7 +12,7 @@ export function ApiDocCreateUser() {
     ApiResponse({
       status: 201,
       description: "User created",
-      type: CreateUserDto,
+      type: CreateAccountDto,
     }),
   );
 }

@@ -1,21 +1,20 @@
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectDrizzle } from "../../shared/modules/drizzle/drizzle.decorators.js";
 import type { Database } from "../../db/type.js";
-import { User, UserUpdate } from "./types/user.type.js";
+import { Account, AccountUpdate, NewAccount } from "./types/user.type.js";
 import { and, eq, SQL } from "drizzle-orm";
-import { roleTable, userTable } from "../../db/schema/index.js";
+import { roleTable, accountsTable } from "../../db/schema/index.js";
 import {
   executeInsertTakeFirstOrThrow,
   handleDatabaseInsertException,
 } from "../../utils/db.utils.js";
-import { CreateUserDto } from "./dto/create-user.dto.js";
 import { ROLE } from "../roles/roles.constants.js";
-import { UserEntity } from "./entities/user.entity.js";
+import { UserAccountEntity } from "./entities/user-account.entity.js";
 import { PasswordService } from "../../shared/services/password.service.js";
 
 @Injectable()
-export class UsersService {
-  private readonly logger = new Logger(UsersService.name);
+export class AccountsService {
+  private readonly logger = new Logger(AccountsService.name);
 
   public constructor(
     @InjectDrizzle() private readonly db: Database,
@@ -24,10 +23,10 @@ export class UsersService {
 
   async findFirstIncludePassword(
     email: string,
-  ): Promise<UserEntity | undefined> {
+  ): Promise<UserAccountEntity | undefined> {
     try {
-      return await this.db.query.userTable.findFirst({
-        where: eq(userTable.email, email),
+      return await this.db.query.accountsTable.findFirst({
+        where: eq(accountsTable.email, email),
         with: {
           role: true,
         },
@@ -38,7 +37,7 @@ export class UsersService {
     }
   }
 
-  public async findFirst(criteria: Partial<User>) {
+  public async findFirst(criteria: Partial<Account>) {
     try {
       return (await this.findMany(criteria))[0];
     } catch (error: unknown) {
@@ -46,12 +45,12 @@ export class UsersService {
     }
   }
 
-  public async update(userId: User["id"], user: UserUpdate) {
+  public async update(userId: Account["id"], user: AccountUpdate) {
     try {
       return await this.db
-        .update(userTable)
+        .update(accountsTable)
         .set(user)
-        .where(eq(userTable.id, userId))
+        .where(eq(accountsTable.id, userId))
         .execute();
     } catch (error: unknown) {
       this.logger.error("Failed to update user", error);
@@ -59,7 +58,9 @@ export class UsersService {
     }
   }
 
-  public async create(createUserDto: CreateUserDto): Promise<UserEntity> {
+  public async create(
+    newAccountData: Omit<NewAccount, "roleId">,
+  ): Promise<UserAccountEntity> {
     try {
       let userRole = await this.db.query.roleTable.findFirst({
         where: eq(roleTable.name, "USER"),
@@ -73,15 +74,15 @@ export class UsersService {
           .execute(),
       );
 
-      const hashedPassword = await this.passwordService.hash(
-        createUserDto.password,
-      );
+      const hashedPassword = newAccountData.password
+        ? this.passwordService.hashSync(newAccountData.password)
+        : null;
 
       const { id } = await executeInsertTakeFirstOrThrow(
         this.db
-          .insert(userTable)
+          .insert(accountsTable)
           .values({
-            ...createUserDto,
+            ...newAccountData,
             password: hashedPassword,
             roleId: userRole.id,
           })
@@ -96,7 +97,9 @@ export class UsersService {
     }
   }
 
-  public async findFirstOrThrow(criteria: Partial<User>): Promise<UserEntity> {
+  public async findFirstOrThrow(
+    criteria: Partial<Account>,
+  ): Promise<UserAccountEntity> {
     const user = await this.findFirst(criteria);
     if (!user) {
       throw new NotFoundException("User not found");
@@ -104,34 +107,34 @@ export class UsersService {
     return user;
   }
 
-  public findMany(criteria: Partial<User>): Promise<UserEntity[]> {
+  public findMany(criteria: Partial<Account>): Promise<UserAccountEntity[]> {
     const filters: SQL[] = [];
 
     if (criteria.firstName) {
-      filters.push(eq(userTable.firstName, criteria.firstName));
+      filters.push(eq(accountsTable.firstName, criteria.firstName));
     }
 
     if (criteria.email) {
-      filters.push(eq(userTable.email, criteria.email));
+      filters.push(eq(accountsTable.email, criteria.email));
     }
 
     if (criteria.lastName) {
-      filters.push(eq(userTable.lastName, criteria.lastName));
+      filters.push(eq(accountsTable.lastName, criteria.lastName));
     }
 
     if (criteria.roleId) {
-      filters.push(eq(userTable.roleId, criteria.roleId));
+      filters.push(eq(accountsTable.roleId, criteria.roleId));
     }
 
     if (criteria.id) {
-      filters.push(eq(userTable.id, criteria.id));
+      filters.push(eq(accountsTable.id, criteria.id));
     }
 
     if (criteria.createdAt) {
-      filters.push(eq(userTable.createdAt, criteria.createdAt));
+      filters.push(eq(accountsTable.createdAt, criteria.createdAt));
     }
 
-    return this.db.query.userTable
+    return this.db.query.accountsTable
       .findMany({
         where: and(...filters),
         with: {

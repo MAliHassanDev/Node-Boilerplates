@@ -3,16 +3,15 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
-import { UsersService } from "../users/users.service.js";
+import { AccountsService } from "../accounts/accounts.service.js";
 import { PasswordService } from "../../shared/services/password.service.js";
-import { UserEntity } from "../users/entities/user.entity.js";
 import { JwtService } from "@nestjs/jwt";
-import { AuthTokenPayload } from "./types/auth.type.js";
+import { AuthorizedUser, AuthTokenPayload } from "./types/auth.type.js";
 
 @Injectable()
 export class AuthService {
   public constructor(
-    private readonly usersService: UsersService,
+    private readonly usersService: AccountsService,
     private readonly passwordService: PasswordService,
     private readonly jwtService: JwtService,
   ) {}
@@ -24,6 +23,16 @@ export class AuthService {
       throw new NotFoundException("No account is registered with this email");
     }
 
+    const { password: _, ...userWithoutPassword } = user;
+
+    if (user.provider !== "local") {
+      return userWithoutPassword;
+    }
+
+    if (!user.password) {
+      throw new UnauthorizedException("Missing password");
+    }
+
     const doPasswordsMatch = await this.passwordService.compare(
       password,
       user.password,
@@ -33,16 +42,14 @@ export class AuthService {
       throw new UnauthorizedException("Incorrect password");
     }
 
-    const { password: _, ...userWithoutPassword } = user;
-
     return userWithoutPassword;
   }
 
-  public login(user: UserEntity) {
+  public login(user: AuthorizedUser) {
+    const { id, ...rest } = user;
     const payload = {
-      sub: user.id,
-      email: user.email,
-      role: user.role.code,
+      sub: id,
+      ...rest,
     } satisfies AuthTokenPayload;
     return {
       access_token: this.jwtService.sign(payload),

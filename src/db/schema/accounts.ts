@@ -3,14 +3,18 @@ import { timestamps } from "./columns.helper.js";
 import { roleTable } from "./roles.js";
 import { relations } from "drizzle-orm";
 
-export const userTable = t.pgTable(
-  "users",
+export const providerEnum = t.pgEnum("provider_enum", ["google", "local"]);
+
+export const accountsTable = t.pgTable(
+  "accounts",
   {
     id: t.uuid().primaryKey().defaultRandom(),
     firstName: t.text().notNull(),
     lastName: t.text(),
+    provider: providerEnum().notNull().default("local"),
+    providerId: t.text(),
     email: t.text().notNull(),
-    password: t.text().notNull(),
+    password: t.text(),
     roleId: t
       .uuid()
       .notNull()
@@ -23,9 +27,9 @@ export const userTable = t.pgTable(
   table => [t.uniqueIndex("idx_email").on(table.email)],
 );
 
-export const userRoleRelation = relations(userTable, ({ one }) => ({
+export const userRoleRelation = relations(accountsTable, ({ one }) => ({
   role: one(roleTable, {
-    fields: [userTable.roleId],
+    fields: [accountsTable.roleId],
     references: [roleTable.id],
   }),
 }));

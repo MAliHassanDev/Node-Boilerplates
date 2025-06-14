@@ -17,7 +17,6 @@ export class AllExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(AllExceptionFilter.name);
 
   catch(exception: unknown, host: ArgumentsHost) {
-    this.logger.log("Exception caught", exception);
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
 
@@ -49,6 +48,7 @@ export class AllExceptionFilter implements ExceptionFilter {
       return;
     }
 
+    this.logger.error("Unknown exception caught", exception);
     res.status(500).json({
       statusCode: 500,
       message: "Internal server error",

@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsEnum, IsOptional, IsString } from "class-validator";
+import { IsEmail, IsOptional, IsString } from "class-validator";
 
-export class CreateUserDto {
+export class CreateAccountDto {
   @IsString()
   @ApiProperty({
     example: "Muhammad",
@@ -21,19 +21,11 @@ export class CreateUserDto {
   })
   public readonly email: string;
 
+  @IsOptional()
   @IsString()
   @ApiProperty({
     example: "123456",
     description: "The password of the user",
   })
   public readonly password: string;
-
-  @IsEnum(["MALE", "FEMALE", "OTHER"], {
-    message: "Gender must male, female or other",
-  })
-  @ApiProperty({
-    example: "MALE",
-    description: "The gender of the user",
-  })
-  public readonly gender: "male" | "female" | "other";
 }

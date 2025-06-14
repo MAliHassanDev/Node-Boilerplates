@@ -1,8 +1,11 @@
 import { Exclude, Transform } from "class-transformer";
 import { RoleEntity } from "../../roles/entities/role.entity.js";
+import { Account } from "../types/user.type.js";
 
-export class UserEntity {
+export class UserAccountEntity {
   id: string;
+  provider: Account["provider"];
+  providerId: string | null;
   firstName: string;
   lastName: string | null;
   email: string;
@@ -18,12 +21,12 @@ export class UserEntity {
   role: RoleEntity;
 
   @Exclude()
-  password: string;
+  password: string | null;
 
   @Exclude()
   roleId: string;
 
-  constructor(partial: Partial<UserEntity>) {
+  constructor(partial: Partial<UserAccountEntity>) {
     Object.assign(this, partial);
   }
 }

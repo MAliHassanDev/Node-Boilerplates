@@ -8,7 +8,7 @@ import { DrizzleModule } from "../shared/modules/drizzle/drizzle.module.js";
 import { EnvService } from "../shared/services/env/env.service.js";
 import * as schema from "../db/schema/index.js";
 import { envSchema } from "../shared/services/env/env.schema.js";
-import { UsersModule } from "../core/users/users.module.js";
+import { UsersModule } from "../core/accounts/accounts.module.js";
 import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { JwtAuthGuard } from "../core/auth/guards/jwt-auth.guard.js";

@@ -1,7 +1,7 @@
 import * as t from "drizzle-orm/pg-core";
 import { timestamps } from "./columns.helper.js";
 import { relations } from "drizzle-orm";
-import { userTable } from "./users.js";
+import { accountsTable } from "./accounts.js";
 
 export const rolNameEnum = t.pgEnum("role_name", ["USER", "ADMIN"]);
 
@@ -14,5 +14,5 @@ export const roleTable = t.pgTable("role", {
 });
 
 export const roleUsersRelation = relations(roleTable, ({ many }) => ({
-  users: many(userTable),
+  users: many(accountsTable),
 }));

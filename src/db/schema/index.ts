@@ -1,2 +1,2 @@
-export * from "./users.js";
+export * from "./accounts.js";
 export * from "./roles.js";

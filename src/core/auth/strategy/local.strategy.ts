@@ -4,7 +4,7 @@ import { AuthService } from "../auth.service.js";
 import { BadRequestException, Injectable } from "@nestjs/common";
 
 @Injectable()
-export class LocalStrategy extends PassportStrategy(Strategy) {
+export class LocalStrategy extends PassportStrategy(Strategy, "local") {
   public constructor(private readonly authService: AuthService) {
     super({ usernameField: "email" });
   }

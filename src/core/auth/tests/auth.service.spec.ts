@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { AuthService } from "../auth.service.js";
-import { UsersService } from "../../users/users.service.js";
+import { AccountsService } from "../../accounts/accounts.service.js";
 import { PasswordService } from "../../../shared/services/password.service.js";
 import { JwtService } from "@nestjs/jwt";
 
@@ -21,7 +21,7 @@ describe("AuthService", () => {
           },
         },
         {
-          provide: UsersService,
+          provide: AccountsService,
           useValue: {
             findOne: vi.fn(),
           },
