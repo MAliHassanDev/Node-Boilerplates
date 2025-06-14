@@ -6,7 +6,7 @@ import {
 import { AccountsService } from "../accounts/accounts.service.js";
 import { PasswordService } from "../../shared/services/password.service.js";
 import { JwtService } from "@nestjs/jwt";
-import { AuthorizedUser, AuthTokenPayload } from "./types/auth.type.js";
+import { AuthenticatedUser, AuthTokenPayload } from "./types/auth.type.js";
 
 @Injectable()
 export class AuthService {
@@ -45,7 +45,7 @@ export class AuthService {
     return userWithoutPassword;
   }
 
-  public login(user: AuthorizedUser) {
+  public login(user: AuthenticatedUser) {
     const { id, ...rest } = user;
     const payload = {
       sub: id,

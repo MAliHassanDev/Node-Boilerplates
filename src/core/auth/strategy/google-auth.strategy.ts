@@ -2,16 +2,11 @@ import { Injectable, Logger } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { Strategy } from "passport-google-oauth20";
 import { EnvService } from "../../../shared/services/env/env.service.js";
-import { AuthorizedUser } from "../types/auth.type.js";
+import {
+  AuthenticatedUser,
+  type OAuthUserProfile,
+} from "../types/auth.type.js";
 import { AccountsService } from "../../accounts/accounts.service.js";
-
-export interface GoogleProfile {
-  id: string;
-  displayName: string;
-  name: { familyName: string; givenName: string };
-  emails: [{ value: string; verified: boolean }];
-  provider: "google";
-}
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
@@ -32,14 +27,10 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
   public async validate(
     accessToken: string,
     refreshToken: string,
-    profile: GoogleProfile,
+    profile: OAuthUserProfile,
   ) {
     try {
-      let userAccount = await this.accountsService.findFirst({
-        email: profile.emails[0].value,
-      });
-
-      userAccount ??= await this.accountsService.create({
+      const userAccount = await this.accountsService.findOrCreate({
         firstName: profile.displayName,
         email: profile.emails[0].value,
         provider: profile.provider,
@@ -52,7 +43,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
         providerId: userAccount.providerId,
         provider: userAccount.provider,
         role: userAccount.role.code,
-      } satisfies AuthorizedUser;
+      } satisfies AuthenticatedUser;
     } catch (error: unknown) {
       this.logger.error("Failed to validate user in google strategy", error);
       throw error;

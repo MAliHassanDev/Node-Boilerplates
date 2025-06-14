@@ -9,8 +9,10 @@ import { JwtModule } from "@nestjs/jwt";
 import { jwtConstants } from "./constants/auth.constants.js";
 import { JwtStrategy } from "./strategy/jwt.strategy.js";
 import { JwtAuthGuard } from "./guards/jwt-auth.guard.js";
-import { GoogleStrategy } from "./strategy/google-auth2.0.strategy.js";
+import { GoogleStrategy } from "./strategy/google-auth.strategy.js";
 import { GoogleAuthGuard } from "./guards/google-auth.guard.js";
+import { GithubAuthGuard } from "./guards/github-auth.guard.js";
+import { GithubAuthStrategy } from "./strategy/github-auth.strategy.js";
 
 @Module({
   imports: [
@@ -26,6 +28,8 @@ import { GoogleAuthGuard } from "./guards/google-auth.guard.js";
     AuthService,
     GoogleStrategy,
     GoogleAuthGuard,
+    GithubAuthGuard,
+    GithubAuthStrategy,
     LocalStrategy,
     JwtAuthGuard,
     LocalAuthGuard,

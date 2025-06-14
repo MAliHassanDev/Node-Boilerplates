@@ -1,5 +1,6 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsOptional, IsString } from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { IsEmail, IsEnum, IsOptional, IsString } from "class-validator";
+import type { Account } from "../types/user.type.js";
 
 export class CreateAccountDto {
   @IsString()
@@ -11,8 +12,11 @@ export class CreateAccountDto {
 
   @IsOptional()
   @IsString()
-  @ApiProperty({ example: "Ali", description: "The last name of the user" })
-  public readonly lastName: string;
+  @ApiPropertyOptional({
+    example: "Ali",
+    description: "The last name of the user",
+  })
+  public readonly lastName?: string;
 
   @IsEmail()
   @ApiProperty({
@@ -23,9 +27,16 @@ export class CreateAccountDto {
 
   @IsOptional()
   @IsString()
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: "123456",
     description: "The password of the user",
   })
-  public readonly password: string;
+  public readonly password?: string;
+
+  @IsOptional()
+  @IsEnum(["local", "google", "github"])
+  public readonly provider?: Account["provider"];
+
+  @IsOptional()
+  public readonly providerId?: string;
 }

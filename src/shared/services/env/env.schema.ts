@@ -18,6 +18,11 @@ export const envSchema = z.object({
   GOOGLE_CALLBACK_URL: z
     .string()
     .default("http://localhost:3000/v1/auth/google/callback"),
+  GITHUB_CALLBACK_URL: z
+    .string()
+    .default("http://localhost:3000/v1/auth/github/callback"),
+  GITHUB_CLIENT_SECRET: z.string(),
+  GITHUB_CLIENT_ID: z.string(),
   DATABASE_PORT: z.coerce.number().default(5432),
   DATABASE_USER: z.string().default("postgres"),
   DATABASE_PASSWORD: z.string().optional(),

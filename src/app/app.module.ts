@@ -28,7 +28,6 @@ import { JwtAuthGuard } from "../core/auth/guards/jwt-auth.guard.js";
             url: envService.get("DATABASE_URL"),
           },
           drizzleConfig: {
-            logger: true,
             casing: "snake_case",
             schema: { ...schema },
           },

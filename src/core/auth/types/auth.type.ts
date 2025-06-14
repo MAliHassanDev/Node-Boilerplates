@@ -8,12 +8,20 @@ export type AuthTokenPayload = {
   providerId: string | null;
 };
 
-export interface AuthorizedUser extends Omit<AuthTokenPayload, "sub"> {
+export interface AuthenticatedUser extends Omit<AuthTokenPayload, "sub"> {
   id: string;
 }
 
 declare module "express-serve-static-core" {
   interface Request {
-    user: AuthorizedUser;
+    user: AuthenticatedUser;
   }
+}
+
+export interface OAuthUserProfile {
+  id: string;
+  displayName: string;
+  name: { familyName: string; givenName: string };
+  emails: [{ value: string; verified: boolean }];
+  provider: "google" | "github";
 }
