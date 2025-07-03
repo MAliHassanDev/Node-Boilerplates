@@ -1,10 +1,9 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
+    "target": "ES2023",
     "useDefineForClassFields": true,
     "lib": ["ES2024"],
-    "module": "NodeNext",
-    "moduleResolution": "nodenext",
+    "module": "commonjs",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowJs": true,
@@ -17,12 +16,21 @@
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "outDir": "dist",
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "plugins": [
+      // Transform paths in output .js files
+      { "transform": "typescript-transform-paths" },
+
+      // Transform paths in output .d.ts files (Include this line if you output declarations files)
+      { "transform": "typescript-transform-paths", "afterDeclarations": true }
+    ],
 
     /* Linting */
     "strict": true,
     "strictPropertyInitialization": false,
-    // "noUnusedLocals": true,
-    // "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
     "noUncheckedIndexedAccess": true,
