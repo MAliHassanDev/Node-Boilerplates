@@ -4,7 +4,7 @@ import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended"
 import globals from "globals";
 import tseslint from "typescript-eslint";
 import eslintNestJs from "@darraghor/eslint-plugin-nestjs-typed";
-
+import unusedImports from "eslint-plugin-unused-imports";
 export default tseslint.config(
   {
     ignores: ["eslint.config.mjs"],
@@ -33,6 +33,9 @@ export default tseslint.config(
     ignores: ["build/**", "**/*.mjs", "**/*.js", "**/*.config.ts"],
   },
   {
+    plugins: {
+      "unused-imports": unusedImports,
+    },
     rules: {
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-floating-promises": "warn",
