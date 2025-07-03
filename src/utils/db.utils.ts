@@ -6,7 +6,7 @@ import {
 } from "@nestjs/common";
 import { isPostgresException, PostgresException } from "./exception.utils.js";
 
-export async function executeInsertTakeFirstOrThrow<T>(
+export async function executeQueryTakeFirstOrThrow<T>(
   query: Promise<T[]>,
 ): Promise<T> {
   const result = await query;

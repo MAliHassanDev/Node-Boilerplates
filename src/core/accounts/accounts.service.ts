@@ -5,7 +5,7 @@ import { Account, AccountUpdate } from "./types/user.type.js";
 import { and, eq, SQL } from "drizzle-orm";
 import { roleTable, accountTable } from "../../db/schema/index.js";
 import {
-  executeInsertTakeFirstOrThrow,
+  executeQueryTakeFirstOrThrow,
   handleDatabaseInsertException,
 } from "../../utils/db.utils.js";
 import { ROLE } from "../roles/roles.constants.js";
@@ -49,7 +49,7 @@ export class AccountsService {
 
   public async update(userId: Account["id"], user: AccountUpdate) {
     try {
-      const { id } = await executeInsertTakeFirstOrThrow(
+      const { id } = await executeQueryTakeFirstOrThrow(
         this.db
           .update(accountTable)
           .set(user)
@@ -89,7 +89,7 @@ export class AccountsService {
         where: eq(roleTable.name, "USER"),
       });
 
-      userRole ??= await executeInsertTakeFirstOrThrow(
+      userRole ??= await executeQueryTakeFirstOrThrow(
         this.db
           .insert(roleTable)
           .values(Object.values(ROLE))
@@ -102,7 +102,7 @@ export class AccountsService {
           ? this.passwordService.hashSync(createAccountDto.password)
           : null;
 
-        const { id } = await executeInsertTakeFirstOrThrow(
+        const { id } = await executeQueryTakeFirstOrThrow(
           trx
             .insert(accountTable)
             .values({
