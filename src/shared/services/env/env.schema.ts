@@ -28,6 +28,7 @@ export const envSchema = z.object({
   DATABASE_PASSWORD: z.string().optional(),
   DATABASE_PASSWORD_FILE: z.string().default("/run/secrets/db-password"),
   DATABASE_URL: z.string(),
+  REDIS_URL: z.string().default("redis://cache:6379"),
 });
 
 export type Env = z.infer<typeof envSchema>;

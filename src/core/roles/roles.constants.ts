@@ -1,4 +1,4 @@
-import { NewRole, Role } from "./roles.type.js";
+import { NewRole, Role } from "./types/roles.type.js";
 
 export const ROLE = {
   USER: {
@@ -6,6 +6,7 @@ export const ROLE = {
     code: 3001,
     description: "Normal user role",
   },
+
   ADMIN: {
     name: "ADMIN",
     code: 3002,

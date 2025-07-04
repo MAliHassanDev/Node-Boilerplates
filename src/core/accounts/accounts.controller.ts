@@ -12,16 +12,18 @@ import { ApiDocCreateUser } from "./docs/accounts.docs.js";
 import { CreateAccountDto } from "./dto/create-account.dto.js";
 import type { Request } from "express";
 import { UserAccountEntity } from "./entities/user-account.entity.js";
+import { Roles } from "@/core/roles/decorators/roles.decorator";
 
 @Controller("users")
 @ApiTags("Users")
 export class UsersController {
   public constructor(private readonly usersService: AccountsService) {}
 
+  @Roles(["ADMIN"])
   @Get()
   @SerializeOptions({ type: UserAccountEntity })
   public async findAll(): Promise<UserAccountEntity[]> {
-    return this.usersService.findMany({});
+    return this.usersService.findAll({});
   }
 
   @Post()

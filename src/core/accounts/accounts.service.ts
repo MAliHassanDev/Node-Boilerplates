@@ -13,9 +13,10 @@ import { UserAccountEntity } from "./entities/user-account.entity.js";
 import { PasswordService } from "../../shared/services/password.service.js";
 import { CreateAccountDto } from "./dto/create-account.dto.js";
 import { ServiceOptions } from "../../shared/types/shared.type.js";
+import { Service } from "@/shared/interfaces/service.interface.js";
 
 @Injectable()
-export class AccountsService {
+export class AccountsService implements Service<UserAccountEntity> {
   private readonly logger = new Logger(AccountsService.name);
 
   public constructor(
@@ -41,7 +42,7 @@ export class AccountsService {
 
   public async findFirst(criteria: Partial<Account>, options?: ServiceOptions) {
     try {
-      return (await this.findMany(criteria, options))[0];
+      return (await this.findAll(criteria, options))[0];
     } catch (error: unknown) {
       this.logger.error("Failed to find user", error);
     }
@@ -133,7 +134,16 @@ export class AccountsService {
     return user;
   }
 
-  public findMany(
+  public async findById(id: string): Promise<UserAccountEntity | undefined> {
+    try {
+      return await this.findFirst({ id });
+    } catch (error: unknown) {
+      this.logger.error("Failed to find user", error);
+      throw error;
+    }
+  }
+
+  public findAll(
     criteria: Partial<Account>,
     options?: ServiceOptions,
   ): Promise<UserAccountEntity[]> {
