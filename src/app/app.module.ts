@@ -12,6 +12,9 @@ import { UsersModule } from "@/core/accounts/accounts.module";
 import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { JwtAuthGuard } from "@/core/auth/guards/jwt-auth.guard";
+import { CacheModule } from "@nestjs/cache-manager";
+import { createKeyv } from "@keyv/redis";
+import { RolesGuard } from "@/core/roles/guards/roles.guard";
 
 @Module({
   imports: [
@@ -33,6 +36,16 @@ import { JwtAuthGuard } from "@/core/auth/guards/jwt-auth.guard";
           },
         };
       },
+    }),
+    CacheModule.registerAsync({
+      useFactory: (envService: EnvService) => {
+        return {
+          ttl: 6000,
+          stores: [createKeyv(envService.get("REDIS_URL"))],
+        };
+      },
+      inject: [EnvService],
+      isGlobal: true,
     }),
     ThrottlerModule.forRoot({
       throttlers: [
@@ -67,6 +80,10 @@ import { JwtAuthGuard } from "@/core/auth/guards/jwt-auth.guard";
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
     {
       provide: APP_GUARD,
